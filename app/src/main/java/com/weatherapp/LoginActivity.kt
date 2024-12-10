@@ -18,6 +18,7 @@ import com.weatherapp.ui.theme.WeatherAppTheme
  */
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -97,15 +98,21 @@ fun LoginPage(modifier: Modifier = Modifier) {
             Button(
                 onClick = {
                     Toast.makeText(activity, "Login OK!", Toast.LENGTH_LONG).show()
+                    activity?.startActivity(
+                        Intent(activity, MainActivity::class.java).setFlags(
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        )
+                    )
                 },
                 enabled = email.isNotEmpty() && password.isNotEmpty()
             ) {
                 Text("Login")
             }
             Button(
-                onClick = { email = ""; password = "" } ,
+                onClick = {
+                    email = ""; password = ""} ,
                 enabled = email.isNotEmpty() && password.isNotEmpty()
-            ) {
+            ){
                 Text("Limpar")
             }
         }

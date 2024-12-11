@@ -29,6 +29,11 @@ import com.weatherapp.ui.nav.BottomNavBar
 import com.weatherapp.ui.nav.BottomNavItem
 import com.weatherapp.ui.nav.MainNavHost
 import com.weatherapp.ui.theme.WeatherAppTheme
+import com.weatherapp.MapPage
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -39,7 +44,11 @@ class MainActivity : ComponentActivity() {
             val viewModel : MainViewModel by viewModels()
             val navController = rememberNavController()
             var showDialog by remember { mutableStateOf(false) }
-            WeatherAppTheme {
+            val currentRoute = navController.currentBackStackEntryAsState()
+            val showButton = currentRoute.value?.destination?.route != BottomNavItem.MapPage.route
+            val launcher = rememberLauncherForActivityResult(contract =
+            ActivityResultContracts.RequestPermission(), onResult = {})
+                    WeatherAppTheme {
                 if (showDialog) CityDialog(
                     onDismiss = { showDialog = false },
                     onConfirm = { city ->
@@ -70,14 +79,16 @@ class MainActivity : ComponentActivity() {
                         BottomNavBar(navController = navController, items)
                     },
                     floatingActionButton = {
-                        FloatingActionButton(onClick = {
-                            showDialog = true
-                        }) {
-                            Icon(Icons.Default.Add, contentDescription = "Adicionar")
+                        if (showButton) {
+                            FloatingActionButton(onClick = { showDialog = true }) {
+                                Icon(Icons.Default.Add, contentDescription = "Adicionar")
+                            }
                         }
+
                     }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
+                        launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                         MainNavHost(navController = navController, modifier = Modifier, viewModel = viewModel)
                     }
                 }

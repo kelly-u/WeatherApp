@@ -10,7 +10,6 @@ import com.weatherapp.ui.ListPage
 import com.weatherapp.MapPage
 import com.weatherapp.ui.MainViewModel
 
-
 @Composable
 fun MainNavHost(navController: NavHostController, modifier: Modifier = Modifier, viewModel: MainViewModel) {
     NavHost(navController, startDestination = Route.Home) {

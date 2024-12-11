@@ -28,17 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import com.weatherapp.MainActivity
-
-data class City (
-    val name : String,
-    val weather: String? = null,
-    val location: String? = null
-)
-
-private fun getCities() = List(20) { i ->
-    City(name = "Cidade $i", weather = "Carregando clima...")
-}
+import com.weatherapp.ui.model.City
 
 @Composable
 fun CityItem(
@@ -72,8 +64,9 @@ fun CityItem(
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun ListPage(modifier: Modifier = Modifier) {
-    val cityList = remember { getCities().toMutableStateList() }
+fun ListPage(modifier: Modifier = Modifier,
+             viewModel: MainViewModel) {
+    val cityList = viewModel.cities
     val activity = LocalContext.current as? Activity
     LazyColumn(
         modifier = modifier
@@ -82,12 +75,7 @@ fun ListPage(modifier: Modifier = Modifier) {
     ) {
         items(cityList) { city ->
             CityItem(city = city, onClose = {
-                Toast.makeText(activity, "Removendo cidade", Toast.LENGTH_LONG).show()
-                activity?.startActivity(
-                    Intent(activity, MainActivity::class.java).setFlags(
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    )
-                )
+                viewModel.remove(city)
             }, onClick = {
                 Toast.makeText(activity, "Visualizar cidade", Toast.LENGTH_LONG).show()
                 activity?.startActivity(

@@ -26,13 +26,6 @@ import com.weatherapp.ui.MainViewModel
 fun MapPage(modifier: Modifier = Modifier,
             viewModel: MainViewModel) {
 
-    viewModel.cities.forEach {
-        if (it.location != null) {
-            Marker( state = MarkerState(position = it.location),
-                title = it.name, snippet = "${it.location}")
-        }
-    }
-
     val recife = LatLng(-8.05, -34.9)
     val caruaru = LatLng(-8.27, -35.98)
     val joaopessoa = LatLng(-7.12, -34.84)
@@ -41,6 +34,14 @@ fun MapPage(modifier: Modifier = Modifier,
 
     GoogleMap (modifier = Modifier.fillMaxSize(), onMapClick = { viewModel.add("Nova cidade", location = it)}, cameraPositionState = camPosState
     ){
+
+        viewModel.cities.forEach {
+            if (it.location != null) {
+                Marker( state = MarkerState(position = it.location),
+                    title = it.name, snippet = "${it.location}")
+            }
+        }
+
         Marker(
             state = MarkerState(position = recife),
             title = "Recife",

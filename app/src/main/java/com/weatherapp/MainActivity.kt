@@ -33,6 +33,7 @@ import com.google.firebase.auth.auth
 import com.weatherapp.ui.CityDialog
 import com.weatherapp.ui.MainViewModel
 import com.weatherapp.ui.MainViewModelFactory
+import com.weatherapp.ui.api.WeatherService
 import com.weatherapp.ui.db.fb.FBDatabase.FBDatabase
 
 import com.weatherapp.ui.nav.BottomNavBar
@@ -48,8 +49,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val fbDB = remember { FBDatabase() }
+            val serv = remember { WeatherService() }
             val viewModel : MainViewModel = viewModel(
-                factory = MainViewModelFactory(fbDB)
+                factory = MainViewModelFactory(fbDB, serv)
             )
             val navController = rememberNavController()
             var showDialog by remember { mutableStateOf(false) }

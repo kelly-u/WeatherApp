@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.weatherapp.ui.model.City
 
-
 class MainViewModel : ViewModel() {
     private val _cities = getCities().toMutableStateList()
     val cities
@@ -16,7 +15,6 @@ class MainViewModel : ViewModel() {
     fun add(name: String, location: LatLng? = null) {
         _cities.add(City(name = name, location = location))
     }
-
 
 }
 

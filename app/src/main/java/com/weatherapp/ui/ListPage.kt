@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import com.weatherapp.MainActivity
 import com.weatherapp.ui.model.City
 
-
 @Composable
 fun CityItem(
     city: City,

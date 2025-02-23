@@ -100,7 +100,7 @@ fun LoginPage(modifier: Modifier = Modifier) {
                 onClick = {
                     activity?.startActivity(
                         Intent(activity, RegisterActivity::class.java).setFlags(
-                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY
                         )
                     )
                 }

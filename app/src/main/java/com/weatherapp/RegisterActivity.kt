@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.weatherapp.ui.theme.WeatherAppTheme
+import com.weatherapp.ui.model.User
+import com.weatherapp.ui.db.fb.FBDatabase.FBDatabase
 
 class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +44,7 @@ class RegisterActivity : ComponentActivity() {
             WeatherAppTheme {
                 Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
                     RegisterPage(
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
             }
@@ -107,7 +109,8 @@ fun RegisterPage(modifier: Modifier = Modifier) {
                                 activity.startActivity(
                                     Intent(activity, MainActivity::class.java).setFlags(
                                         FLAG_ACTIVITY_SINGLE_TOP )
-                                )
+                                    )
+                                FBDatabase().register(User(nomeUsuario, email))
                             } else {
                                 Toast.makeText(activity,
                                     "Registro FALHOU!", Toast.LENGTH_LONG).show()

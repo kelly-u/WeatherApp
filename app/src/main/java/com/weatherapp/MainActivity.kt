@@ -60,12 +60,6 @@ class MainActivity : ComponentActivity() {
             val launcher = rememberLauncherForActivityResult(contract =
             ActivityResultContracts.RequestPermission(), onResult = {} )
             WeatherAppTheme {
-                if (showDialog) CityDialog(
-                    onDismiss = { showDialog = false },
-                    onConfirm = { city ->
-                        if (city.isNotBlank()) viewModel.add(city)
-                        showDialog = false
-                    })
                 Scaffold(
                     topBar = {
                         TopAppBar(

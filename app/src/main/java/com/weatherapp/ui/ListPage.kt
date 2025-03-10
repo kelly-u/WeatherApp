@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.weatherapp.MainActivity
+import com.weatherapp.ui.mainviewmodels.MainViewModel
 import com.weatherapp.ui.model.City
 
 @Composable
@@ -62,7 +63,8 @@ fun CityItem(
 @SuppressLint("RememberReturnType")
 @Composable
 fun ListPage(modifier: Modifier = Modifier,
-             viewModel: MainViewModel) {
+             viewModel: MainViewModel
+) {
     val cityList = viewModel.cities
     val activity = LocalContext.current as? Activity
     LazyColumn(
@@ -71,9 +73,6 @@ fun ListPage(modifier: Modifier = Modifier,
             .padding(8.dp)
     ) {
         items(cityList) { city ->
-            if (city.weather == null) {
-                viewModel.loadWeather(city)
-            }
             CityItem(city = city, onClose = {
                 viewModel.remove(city)
             }, onClick = {

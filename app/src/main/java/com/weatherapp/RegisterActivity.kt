@@ -109,7 +109,7 @@ fun RegisterPage(modifier: Modifier = Modifier) {
                                 activity.startActivity(
                                     Intent(activity, MainActivity::class.java).setFlags(
                                         FLAG_ACTIVITY_SINGLE_TOP )
-                                    )
+                                )
                                 FBDatabase().register(User(nomeUsuario, email))
                             } else {
                                 Toast.makeText(activity,

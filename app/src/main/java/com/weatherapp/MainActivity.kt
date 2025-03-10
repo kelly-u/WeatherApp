@@ -31,8 +31,8 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.weatherapp.ui.CityDialog
-import com.weatherapp.ui.MainViewModel
-import com.weatherapp.ui.MainViewModelFactory
+import com.weatherapp.ui.mainviewmodels.MainViewModel
+import com.weatherapp.ui.mainviewmodels.MainViewModelFactory
 import com.weatherapp.ui.api.WeatherService
 import com.weatherapp.ui.db.fb.FBDatabase.FBDatabase
 
@@ -60,6 +60,17 @@ class MainActivity : ComponentActivity() {
             val launcher = rememberLauncherForActivityResult(contract =
             ActivityResultContracts.RequestPermission(), onResult = {} )
             WeatherAppTheme {
+                if (showDialog) {
+                    CityDialog(
+                        onDismiss = { showDialog = false },
+                        onConfirm = { city ->
+                            if (city.isNotBlank()) {
+                                viewModel.add(city)
+                                showDialog = false
+                            }
+                        }
+                    )
+                }
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -105,6 +116,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-            }
-        }
+    }
+}
 

@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+//import com.google.type.LatLng
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -16,14 +17,15 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.weatherapp.ui.MainViewModel
+import com.weatherapp.ui.mainviewmodels.MainViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
 
 @Composable
 fun MapPage(modifier: Modifier = Modifier,
-            viewModel: MainViewModel) {
+            viewModel: MainViewModel
+) {
 
     val recife = LatLng(-8.05, -34.9)
     val caruaru = LatLng(-8.27, -35.98)
@@ -49,12 +51,8 @@ fun MapPage(modifier: Modifier = Modifier,
 
         viewModel.cities.forEach {
             if (it.location != null) {
-                if (it.weather == null) {
-                    viewModel.loadWeather(it)
-                }
-                Marker( state = MarkerState(position = it.location!!),
-                    title = it.name,
-                    snippet = it.weather?.desc?:"Carregando...")
+                Marker( state = MarkerState(position = it.location),
+                    title = it.name, snippet = "${it.location}")
             }
         }
 

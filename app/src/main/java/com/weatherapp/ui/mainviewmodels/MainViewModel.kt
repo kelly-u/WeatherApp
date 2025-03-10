@@ -1,15 +1,13 @@
-package com.weatherapp.ui
+package com.weatherapp.ui.mainviewmodels
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.model.LatLng
 import com.weatherapp.ui.api.WeatherService
 import com.weatherapp.ui.db.fb.FBDatabase.FBDatabase
 import com.weatherapp.ui.model.City
 import com.weatherapp.ui.model.User
-import com.weatherapp.ui.model.Weather
 
 class MainViewModel(private val db: FBDatabase, private val service: WeatherService) : ViewModel(),
     FBDatabase.Listener {
@@ -28,14 +26,13 @@ class MainViewModel(private val db: FBDatabase, private val service: WeatherServ
         db.remove(city)
     }
 
-//    fun add(name: String) {
-//        service.getLocation(name) { lat, lng ->
-//            if (lat != null && lng != null) {
-//                db.add(City(name = name, location = LatLng(lat, lng)))
-//            }
-//        }
-//    }
-
+    fun add(name: String) {
+        service.getLocation(name) { lat, lng ->
+            if (lat != null && lng != null) {
+                db.add(City(name = name, location = LatLng(lat, lng)))
+            }
+        }
+    }
     fun add(location: LatLng) {
         service.getName(location.latitude, location.longitude) { name ->
             if (name != null) {
@@ -43,6 +40,7 @@ class MainViewModel(private val db: FBDatabase, private val service: WeatherServ
             }
         }
     }
+
 
     override fun onUserLoaded(user: User) {
         _user.value = user
@@ -61,30 +59,4 @@ class MainViewModel(private val db: FBDatabase, private val service: WeatherServ
         _cities.remove(city.name)
     }
 
-    fun loadWeather(city: City) {
-        service.getCurrentWeather(city.name) { apiWeather ->
-            city.weather = Weather (
-                date = apiWeather?.current?.last_updated?:"...",
-                desc = apiWeather?.current?.condition?.text?:"...",
-                temp = apiWeather?.current?.temp_c?:-1.0,
-                imgUrl = "https:" + apiWeather?.current?.condition?.icon
-            )
-            _cities.remove(city.name)
-            _cities[city.name] = city.copy()
-        }
-    }
-
-}
-
-class MainViewModelFactory(
-    private val db: FBDatabase,
-    private val service: WeatherService
-) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(db, service) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
 }

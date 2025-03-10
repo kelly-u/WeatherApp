@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-//import com.google.type.LatLng
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -51,8 +50,14 @@ fun MapPage(modifier: Modifier = Modifier,
 
         viewModel.cities.forEach {
             if (it.location != null) {
+
+                if (it.weather == null) {
+                    viewModel.loadWeather(it)
+                }
+
                 Marker( state = MarkerState(position = it.location),
-                    title = it.name, snippet = "${it.location}")
+                    title = it.name,
+                    snippet = it.weather?.desc?:"Carregando...")
             }
         }
 

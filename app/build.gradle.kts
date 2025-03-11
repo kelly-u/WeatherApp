@@ -50,12 +50,13 @@ android {
 }
 
 dependencies {
-    implementation("io.coil-kt:coil-compose:2.5.0") // coil
-    // Google maps
+        // Google maps
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
     // Google maps for compose
     implementation("com.google.maps.android:maps-compose:6.4.4")
+    implementation("io.coil-kt:coil-compose:2.5.0") // coil
+    implementation("com.squareup.picasso:picasso:2.8") // Picasso
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

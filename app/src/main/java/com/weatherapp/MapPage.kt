@@ -19,17 +19,20 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.weatherapp.ui.mainviewmodels.MainViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.core.content.ContextCompat.getDrawable
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.scale
 
 
 @Composable
 fun MapPage(modifier: Modifier = Modifier,
             viewModel: MainViewModel) {
 
+    val context = LocalContext.current
     val recife = LatLng(-8.05, -34.9)
     val caruaru = LatLng(-8.27, -35.98)
     val joaopessoa = LatLng(-7.12, -34.84)
     val camPosState = rememberCameraPositionState ()
-    val context = LocalContext.current
     val hasLocationPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context,
@@ -46,7 +49,6 @@ fun MapPage(modifier: Modifier = Modifier,
         properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
         uiSettings = MapUiSettings(myLocationButtonEnabled = true)
     ){
-
         viewModel.cities.forEach {
             if (it.location != null) {
 
@@ -59,28 +61,29 @@ fun MapPage(modifier: Modifier = Modifier,
                     snippet = it.weather?.desc?:"Carregando...")
             }
         }
+        viewModel.cities.forEach { city ->
+            if (city.location != null) {
+                val drawable = getDrawable(context, R.drawable.loading)
+                val bitmap = drawable?.toBitmap(300, 200)
+                var marker = if (bitmap != null)
+                    BitmapDescriptorFactory.fromBitmap(bitmap)
+                else BitmapDescriptorFactory.defaultMarker()
+                if (city.weather == null) {
+                    viewModel.loadWeather(city)
+                } else if (city.weather!!.bitmap == null) {
+                    viewModel.loadBitmap(city)
+                } else {
+                    marker = BitmapDescriptorFactory
+                        .fromBitmap(city.weather!!.bitmap!!.scale(150, 150))
+                }
+                Marker(
+                    state = MarkerState(position = city.location),
+                    icon = marker,
+                    title = city.name,
+                    snippet = city.weather?.desc?:"carregando..."
+                )
 
-        Marker(
-            state = MarkerState(position = recife),
-            title = "Recife",
-            snippet = "Marcador em Recife",
-            icon = BitmapDescriptorFactory.defaultMarker(
-                BitmapDescriptorFactory.HUE_BLUE)
-        )
-        Marker(
-            state = MarkerState(position = caruaru),
-            title = "Caruaru",
-            snippet = "Marcador em Caruaru",
-            icon = BitmapDescriptorFactory.defaultMarker(
-                BitmapDescriptorFactory.HUE_GREEN)
-        )
-        Marker(
-            state = MarkerState(position = joaopessoa),
-            title = "João Pessoa",
-            snippet = "Marcador em João Pessoa",
-            icon = BitmapDescriptorFactory.defaultMarker(
-                BitmapDescriptorFactory.HUE_YELLOW)
-        )
+            }
+        }
     }
-
 }

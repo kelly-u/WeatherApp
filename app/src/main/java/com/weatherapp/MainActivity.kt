@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,15 +51,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             val fbDB = remember { FBDatabase() }
             val serv = remember { WeatherService() }
-            val viewModel : MainViewModel = viewModel(
+            val viewModel: MainViewModel = viewModel(
                 factory = MainViewModelFactory(fbDB, serv)
             )
             val navController = rememberNavController()
             var showDialog by remember { mutableStateOf(false) }
             val currentRoute = navController.currentBackStackEntryAsState()
-            val showButton = currentRoute.value?.destination?.hasRoute(Route.List::class)?:false
+            val showButton = currentRoute.value?.destination?.hasRoute(Route.List::class) ?: false
             val launcher = rememberLauncherForActivityResult(contract =
-            ActivityResultContracts.RequestPermission(), onResult = {} )
+            ActivityResultContracts.RequestPermission(), onResult = {})
             WeatherAppTheme {
                 if (showDialog) {
                     CityDialog(
@@ -75,14 +76,14 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         TopAppBar(
                             title = {
-                                val name = viewModel.user?.name?:"[não logado]"
+                                val name = viewModel.user?.name ?: "[não logado]"
                                 Text("Bem-vindo/a! $name")
                             },
                             actions = {
-                                IconButton( onClick = {
+                                IconButton(onClick = {
                                     Firebase.auth.signOut()
                                     finish()
-                                } ) {
+                                }) {
                                     Icon(
                                         imageVector =
                                         Icons.AutoMirrored.Filled.ExitToApp,
@@ -98,7 +99,7 @@ class MainActivity : ComponentActivity() {
                             BottomNavItem.ListButton,
                             BottomNavItem.MapButton,
                         )
-                        BottomNavBar(navController = navController, items)
+                        BottomNavBar(viewModel, items)
                     },
                     floatingActionButton = {
                         if (showButton) {
@@ -109,9 +110,26 @@ class MainActivity : ComponentActivity() {
                     }
 
                 ) { innerPadding ->
+                    launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                        MainNavHost(navController = navController, modifier = Modifier, viewModel = viewModel)
+                        MainNavHost(
+                            navController = navController,
+                            modifier = Modifier,
+                            viewModel = viewModel
+                        )
+                    }
+
+                    LaunchedEffect(viewModel.page) {
+                        navController.navigate(viewModel.page) {
+                            // Volta pilha de navegação até HomePage (startDest).
+                            navController.graph.startDestinationRoute?.let {
+                                popUpTo(it) {
+                                    saveState = true
+                                }
+                                restoreState = true
+                            }
+                            launchSingleTop = true
+                        }
                     }
                 }
             }

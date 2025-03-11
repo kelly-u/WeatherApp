@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.weatherapp.MainActivity
 import com.weatherapp.ui.mainviewmodels.MainViewModel
 import com.weatherapp.ui.model.City
+import com.weatherapp.ui.nav.Route
 
 @Composable
 fun CityItem(
@@ -78,12 +79,14 @@ fun ListPage(
                 viewModel.remove(city)
             }, onClick = {
                 viewModel.city = city
-                Toast.makeText(activity, "Visualizar cidade", Toast.LENGTH_LONG).show()
+                viewModel.page = Route.Home
+
+                /*Toast.makeText(activity, "Visualizar cidade", Toast.LENGTH_LONG).show()
                 activity?.startActivity(
                     Intent(activity, MainActivity::class.java).setFlags(
                         Intent.FLAG_ACTIVITY_SINGLE_TOP
                     )
-                )
+                )*/
             })
         }
     }

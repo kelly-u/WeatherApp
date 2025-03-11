@@ -62,8 +62,9 @@ fun CityItem(
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun ListPage(modifier: Modifier = Modifier,
-             viewModel: MainViewModel
+fun ListPage(
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel
 ) {
     val cityList = viewModel.cities
     val activity = LocalContext.current as? Activity
@@ -76,6 +77,7 @@ fun ListPage(modifier: Modifier = Modifier,
             CityItem(city = city, onClose = {
                 viewModel.remove(city)
             }, onClick = {
+                viewModel.city = city
                 Toast.makeText(activity, "Visualizar cidade", Toast.LENGTH_LONG).show()
                 activity?.startActivity(
                     Intent(activity, MainActivity::class.java).setFlags(

@@ -23,8 +23,7 @@ import androidx.compose.runtime.remember
 
 @Composable
 fun MapPage(modifier: Modifier = Modifier,
-            viewModel: MainViewModel
-) {
+            viewModel: MainViewModel) {
 
     val recife = LatLng(-8.05, -34.9)
     val caruaru = LatLng(-8.27, -35.98)
